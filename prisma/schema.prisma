@@ -1,0 +1,74 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Position {
+  posID           Int         @id @default(autoincrement())
+  posName         String      @db.VarChar(100)
+  numofPositions  Int
+  posStatus       String      @default("Open") @db.VarChar(10) // Open | Closed
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  candidates      Candidate[]
+  votes           Vote[]
+  
+  @@map("positions")
+}
+
+model Candidate {
+  candID          Int         @id @default(autoincrement())
+  posID           Int
+  voterID         Int?
+  candName        String      @db.VarChar(100)
+  candPlatform    String?     @db.Text
+  candMname       String?     @db.VarChar(50)
+  candLname       String      @db.VarChar(50)
+  candStat        String      @default("Active") @db.VarChar(10) // Active | Inactive
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  position        Position    @relation(fields: [posID], references: [posID], onDelete: Cascade)
+  voter           Voter?      @relation(fields: [voterID], references: [voterID], onDelete: Cascade)
+  votes           Vote[]
+  
+  @@map("candidates")
+}
+
+model Voter {
+  voterID         Int         @id @default(autoincrement())
+  voterFname      String      @db.VarChar(50)
+  voterLname      String      @db.VarChar(50)
+  voterMname      String?     @db.VarChar(50)
+  voterPass       String      @db.VarChar(255)
+  voterStat       String      @default("Active") @db.VarChar(10) // Active | Inactive
+  voted           String      @default("N") @db.VarChar(1) // Y | N
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  candidacies     Candidate[]
+  votes           Vote[]
+  
+  @@map("voters")
+}
+
+model Vote {
+  voteID          Int         @id @default(autoincrement())
+  voterID         Int
+  candidateID     Int
+  posID           Int
+  createdAt       DateTime    @default(now())
+  
+  voter           Voter       @relation(fields: [voterID], references: [voterID], onDelete: Cascade)
+  candidate       Candidate   @relation(fields: [candidateID], references: [candID], onDelete: Cascade)
+  position        Position    @relation(fields: [posID], references: [posID], onDelete: Cascade)
+  
+  @@unique([voterID, candidateID, posID]) // Changed to allow multiple votes per position
+  @@map("votes")
+}
