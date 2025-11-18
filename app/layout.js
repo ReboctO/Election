@@ -1,5 +1,5 @@
 import { Inter } from 'next/font/google';
-import './globals.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
 import { SessionProvider } from '../context/provider';
 const inter = Inter({ subsets: ['latin'] });
 

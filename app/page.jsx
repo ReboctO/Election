@@ -1,75 +1,43 @@
-'use client';
+'use client'
 
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import Navigation from '../components/navigation';
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import Navigation from '../components/navigation'
 
 export default function Home() {
-  const { data: session } = useSession();
+  const { data: session } = useSession()
+
+  const links = [
+    { href: '/login', title: 'Voter Login', desc: 'Login to cast your vote in the election' },
+    { href: '/admin/positions', title: 'Positions', desc: 'Manage election positions' },
+    { href: '/admin/candidates', title: 'Candidates', desc: 'Manage candidate registrations' },
+    { href: '/admin/voters', title: 'Voters', desc: 'Manage voter registrations' },
+    { href: '/admin/results', title: 'Results', desc: 'View election results and statistics' },
+    { href: '/admin/winners', title: 'Winners', desc: 'View election winners' }
+  ]
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-vh-100 bg-light">
       <Navigation session={session} />
-      <main className="max-w-7xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-800 mb-4">
-            Philippine National Election System
-          </h1>
+      <main className="container py-5">
+        <div className="text-center mb-5">
+          <h1 className="display-4 fw-bold">Philippine National Election System</h1>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-          <Link href="/login" className="block">
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition">
-              <h3 className="text-xl font-semibold mb-2">Voter Login</h3>
-              <p className="text-gray-600">
-                Login to cast your vote in the election
-              </p>
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          {links.map(({ href, title, desc }) => (
+            <div key={href} className="col">
+              <Link href={href} className="text-decoration-none">
+                <div className="card h-100 shadow-sm hover-shadow">
+                  <div className="card-body">
+                    <h3 className="card-title h5 fw-semibold mb-2">{title}</h3>
+                    <p className="card-text text-muted mb-0">{desc}</p>
+                  </div>
+                </div>
+              </Link>
             </div>
-          </Link>
-          <Link href="/admin/positions" className="block">
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition">
-              <h3 className="text-xl font-semibold mb-2">Positions</h3>
-              <p className="text-gray-600">
-                Manage election positions
-              </p>
-            </div>
-          </Link>
-          <Link href="/admin/candidates" className="block">
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition">
-              <h3 className="text-xl font-semibold mb-2">Candidates</h3>
-              <p className="text-gray-600">
-                Manage candidate registrations
-              </p>
-            </div>
-          </Link>
-
-          <Link href="/admin/voters" className="block">
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition">
-              <h3 className="text-xl font-semibold mb-2">Voters</h3>
-              <p className="text-gray-600">
-                Manage voter registrations
-              </p>
-            </div>
-          </Link>
-
-          <Link href="/admin/results" className="block">
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition">
-              <h3 className="text-xl font-semibold mb-2">Results</h3>
-              <p className="text-gray-600">
-                View election results and statistics
-              </p>
-            </div>
-          </Link>
-
-          <Link href="/admin/winners" className="block">
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition">
-              <h3 className="text-xl font-semibold mb-2">Winners</h3>
-              <p className="text-gray-600">
-                View election winners
-              </p>
-            </div>
-          </Link>
+          ))}
         </div>
       </main>
     </div>
-  );
+  )
 }
